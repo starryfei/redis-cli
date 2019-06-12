@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
  * @author: starryfei
  * @date: 2019-06-11 14:14
  **/
-public class RedisCli extends Client  implements BaseCommand {
+public class RedisCli extends Client implements BaseCommand {
 
     RedisCommandImpl redisCommand ;
 
@@ -45,7 +45,7 @@ public class RedisCli extends Client  implements BaseCommand {
     }
 
     public String set(String key, String value, String nxxx, String expx, long time) {
-        return null;
+        return redisCommand.set(key, value, nxxx, expx, time);
     }
 
     public String set(String key, String value, String nxxx) {
@@ -53,7 +53,7 @@ public class RedisCli extends Client  implements BaseCommand {
     }
 
     public String get(String key) {
-        return null;
+        return redisCommand.get(key);
     }
 
     public Boolean exists(String key) {

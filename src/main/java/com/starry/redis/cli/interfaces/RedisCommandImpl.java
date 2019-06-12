@@ -2,9 +2,9 @@ package com.starry.redis.cli.interfaces;
 
 import com.starry.redis.cli.Client;
 import com.starry.redis.cli.common.Common;
-import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +19,11 @@ import java.util.Set;
  **/
 public class RedisCommandImpl implements RedisCommand {
     private Client client;
+    private byte[] read;
+    private int count;
 
     public RedisCommandImpl(Client client){
+        read = new byte[1024];
         this.client = client;
     }
     public RedisCommandImpl(){
@@ -32,9 +35,6 @@ public class RedisCommandImpl implements RedisCommand {
      * @return
      */
     private byte[] cover(String command, String... str){
-        byte[] bytes = new byte[str.length];
-//        String data = "*3\r\n$3\r\nSET\r\n
-//        $5\r\nmykey\r\n$7\r\nmyvalue\r\n";
         StringBuilder sb = new StringBuilder();
         sb.append(Common.REDIS_ARRAY);
         sb.append((str.length+1));
@@ -46,27 +46,64 @@ public class RedisCommandImpl implements RedisCommand {
             sb.append(Common.RESIS_RESPONSE_BULK+value.length()+Common.REDIS_RN);
             sb.append(value);
             sb.append(Common.REDIS_RN);
+        }
+        try {
+            return sb.toString().getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return sb.toString().getBytes();
 
         }
-
-        System.out.println(sb.toString());
-
-        return sb.toString().getBytes();
 
     }
 
-
-    public String set(String key, String value) {
-        byte[] bytes = cover("set",key,value);
-        byte[] read = new byte[1024];
+    /**
+     * 读取数据长度
+     */
+    private void readLength(){
         try {
-            client.getOutputStream().write(bytes);
+            count = client.getInputStream().read(read);
+            if(count == -1) {
+                throw new Exception("read error");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 读取响应的信息
+     * @return
+     */
+    private String readResult(){
+        readLength();
+
+        StringBuilder bytes = new StringBuilder();
+        for(int i =0; i<count; i++){
+            byte b = read[i];
+            bytes.append((char) b);
+        }
+//        String res = bytes.toString();
+
+        return bytes.toString();
+    }
+
+    /**
+     * 发送redis 协议
+     * @param msg
+     */
+    private void sendMsg(byte[] msg){
+        try {
+            client.getOutputStream().write(msg);
             client.getOutputStream().flush();
-            client.getInputStream().read(read);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new String(read);
+    }
+    public String set(String key, String value) {
+        byte[] bytes = cover("set",key,value);
+        sendMsg(bytes);
+        return readResult();
     }
 
     public String set(String key, String value, String nxxx, String expx, long time) {
@@ -74,14 +111,18 @@ public class RedisCommandImpl implements RedisCommand {
     }
 
     public String set(String key, String value, String nxxx) {
+
         return null;
     }
 
     public String get(String key) {
-        return null;
+        byte[] bytes = cover("get",key);
+        sendMsg(bytes);
+        return readResult();
     }
 
     public Boolean exists(String key) {
+
         return null;
     }
 

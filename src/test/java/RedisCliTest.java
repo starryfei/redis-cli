@@ -2,6 +2,7 @@ import com.starry.redis.cli.RedisCli;
 import com.starry.redis.cli.interfaces.RedisCommandImpl;
 import org.junit.Before;
 import org.junit.Test;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +57,14 @@ public class RedisCliTest {
     public void clent(){
         String result = cli.set("ab","cc");
         System.out.println(result);
-    }
 
+        String get = cli.get("ab");
+        System.out.println(get);
+    }
+    @Test
+    public void jedisTest(){
+        Jedis jedis = new Jedis();
+        String res = jedis.set("ab","aa");
+        System.out.println(res);
+}
 }
