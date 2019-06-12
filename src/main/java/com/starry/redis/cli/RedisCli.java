@@ -1,21 +1,11 @@
 package com.starry.redis.cli;
 
-import com.starry.redis.cli.common.Common;
 import com.starry.redis.cli.interfaces.BaseCommand;
-import com.starry.redis.cli.interfaces.RedisCommand;
 import com.starry.redis.cli.interfaces.RedisCommandImpl;
-import com.sun.xml.internal.rngom.parse.host.Base;
-import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 /**
  * ClassName: RedisCli
@@ -49,7 +39,7 @@ public class RedisCli extends Client implements BaseCommand {
     }
 
     public String set(String key, String value, String nxxx) {
-        return null;
+        return redisCommand.set(key,value,nxxx);
     }
 
     public String get(String key) {
@@ -57,7 +47,7 @@ public class RedisCli extends Client implements BaseCommand {
     }
 
     public Boolean exists(String key) {
-        return null;
+        return redisCommand.exists(key);
     }
 
     public Long persist(String key) {
@@ -69,27 +59,27 @@ public class RedisCli extends Client implements BaseCommand {
     }
 
     public Long expire(String key, int seconds) {
-        return null;
+        return redisCommand.expire(key,seconds);
     }
 
     public Long pexpire(String key, long milliseconds) {
-        return null;
+        return redisCommand.pexpire(key,milliseconds);
     }
 
     public Long expireAt(String key, long unixTime) {
-        return null;
+        return redisCommand.expireAt(key,unixTime);
     }
 
     public Long pexpireAt(String key, long millisecondsTimestamp) {
-        return null;
+        return redisCommand.pexpireAt(key,millisecondsTimestamp);
     }
 
     public Long ttl(String key) {
-        return null;
+        return redisCommand.ttl(key);
     }
 
     public Long pttl(String key) {
-        return null;
+        return redisCommand.pttl(key);
     }
 
     public Boolean setbit(String key, long offset, boolean value) {

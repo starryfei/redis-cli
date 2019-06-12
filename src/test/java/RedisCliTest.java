@@ -2,7 +2,6 @@ import com.starry.redis.cli.RedisCli;
 import com.starry.redis.cli.interfaces.RedisCommandImpl;
 import org.junit.Before;
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,13 +35,16 @@ public class RedisCliTest {
         outputStream.write(data.getBytes());
         String get = "*2\r\n$3\r\nget\r\n$5\r\nmykey\r\n";
         String list = "*4\r\n$5\r\nlpush\r\n$1\r\nc\r\n$2\r\ncc\r\n$2\r\nbb\r\n";
+        String ex ="*6\r\n$3\r\nset\r\n$2\r\na1\r\n$3\r\n123\r\n$2\r\nex\r\n$2\r\n10\r\n$2\r\nnx\r\n";
+        String exist ="*2\r\n$6\r\nexists\r\n$2\r\na1\r\n";
         String getlist ="";
         outputStream.write(get.getBytes());
         outputStream.write(list.getBytes());
+        outputStream.write(exist.getBytes());
         outputStream.flush();
         byte[] b = new byte[1024];
         stream.read(b);
-        System.out.println(b);
+//        System.out.println(b);
 
         System.out.println(new String(b));
 
@@ -60,11 +62,18 @@ public class RedisCliTest {
 
         String get = cli.get("ab");
         System.out.println(get);
+        //  *6\r\n$3\r\nset\r\n$1\r\na\r\n$3\r\n123\r\n$2\r\nex\r\n$2\r\n\10\r\n$2\r\nex\r\n
+        String ex = cli.set("a1","123","nx","ex",10);
+        Boolean exist =cli.exists("a1");
+        System.out.println(ex+""+exist);
+        System.out.println(cli.expire("a1",10));
     }
-    @Test
-    public void jedisTest(){
-        Jedis jedis = new Jedis();
-        String res = jedis.set("ab","aa");
-        System.out.println(res);
-}
+
+
+//    @Test
+//    public void jedisTest(){
+//        Jedis jedis = new Jedis();
+//        String res = jedis.set("ab","aa");
+//        System.out.println(res);
+//  }
 }

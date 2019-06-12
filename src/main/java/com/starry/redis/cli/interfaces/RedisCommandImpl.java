@@ -5,7 +5,6 @@ import com.starry.redis.cli.common.Common;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +46,7 @@ public class RedisCommandImpl implements RedisCommand {
             sb.append(value);
             sb.append(Common.REDIS_RN);
         }
+        System.out.println(sb.toString());
         try {
             return sb.toString().getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
@@ -81,11 +81,14 @@ public class RedisCommandImpl implements RedisCommand {
         StringBuilder bytes = new StringBuilder();
         for(int i =0; i<count; i++){
             byte b = read[i];
-            bytes.append((char) b);
+            if(b !='\r' && b != '\n') {
+                bytes.append((char) b);
+            }
         }
-//        String res = bytes.toString();
-
-        return bytes.toString();
+        String res = bytes.toString();
+        res.replaceAll(Common.REDIS_RN,"");
+//        System.out.println(res);/
+        return res;
     }
 
     /**
@@ -106,13 +109,17 @@ public class RedisCommandImpl implements RedisCommand {
         return readResult();
     }
 
+    //    set cc va EX 13 NX
     public String set(String key, String value, String nxxx, String expx, long time) {
-        return null;
+        byte[] bytes = cover("set",key,value,expx,String.valueOf(time),nxxx);
+        sendMsg(bytes);
+        return readResult();
     }
 
     public String set(String key, String value, String nxxx) {
-
-        return null;
+        byte[] bytes = cover("set",key,value,nxxx);
+        sendMsg(bytes);
+        return readResult();
     }
 
     public String get(String key) {
@@ -122,8 +129,10 @@ public class RedisCommandImpl implements RedisCommand {
     }
 
     public Boolean exists(String key) {
-
-        return null;
+        byte[] bytes = cover("exists",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return res.startsWith(":0");
     }
 
     public Long persist(String key) {
@@ -135,27 +144,45 @@ public class RedisCommandImpl implements RedisCommand {
     }
 
     public Long expire(String key, int seconds) {
-        return null;
+        byte[] bytes = cover("expire",key, String.valueOf(seconds));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long pexpire(String key, long milliseconds) {
-        return null;
+        byte[] bytes = cover("pexpire",key, String.valueOf(milliseconds));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long expireAt(String key, long unixTime) {
-        return null;
+        byte[] bytes = cover("expireat",key, String.valueOf(unixTime));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long pexpireAt(String key, long millisecondsTimestamp) {
-        return null;
+        byte[] bytes = cover("pexpireat",key, String.valueOf(millisecondsTimestamp));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long ttl(String key) {
-        return null;
+        byte[] bytes = cover("ttl",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long pttl(String key) {
-        return null;
+        byte[] bytes = cover("pttl",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Boolean setbit(String key, long offset, boolean value) {
