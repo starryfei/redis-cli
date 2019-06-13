@@ -67,6 +67,8 @@ public class RedisCliTest {
         Boolean exist =cli.exists("a1");
         System.out.println(ex+""+exist);
         System.out.println(cli.expire("a1",10));
+        System.out.println(cli.setrange("a1",0,"456"));
+        System.out.println(cli.getrange("a1",0,2));
     }
 
 

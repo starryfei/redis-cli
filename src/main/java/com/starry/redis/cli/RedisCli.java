@@ -50,34 +50,72 @@ public class RedisCli extends Client implements BaseCommand {
         return redisCommand.exists(key);
     }
 
+    /**
+     * Redis PERSIST 命令用于移除给定 key 的过期时间，使得 key 永不过期
+     * @param key
+     * @return
+     */
     public Long persist(String key) {
-        return null;
+        return redisCommand.persist(key);
     }
 
     public String type(String key) {
-        return null;
+        return redisCommand.type(key);
     }
 
+    /**
+     * 秒为单位设置 key 的生存时间
+     * @param key
+     * @param seconds
+     * @return
+     */
     public Long expire(String key, int seconds) {
         return redisCommand.expire(key,seconds);
     }
 
+    /**
+     * 毫秒为单位设置 key 的生存时间
+     * @param key
+     * @param milliseconds
+     * @return
+     */
     public Long pexpire(String key, long milliseconds) {
         return redisCommand.pexpire(key,milliseconds);
     }
 
+    /**
+     * 秒为单位设置 key 的过期 unix 时间戳
+     * @param key
+     * @param unixTime
+     * @return
+     */
     public Long expireAt(String key, long unixTime) {
         return redisCommand.expireAt(key,unixTime);
     }
 
+    /**
+     * 毫秒为单位设置 key 的过期 unix 时间戳
+     * @param key
+     * @param millisecondsTimestamp
+     * @return
+     */
     public Long pexpireAt(String key, long millisecondsTimestamp) {
         return redisCommand.pexpireAt(key,millisecondsTimestamp);
     }
 
+    /**
+     * 返回剩余时间，单位s
+     * @param key
+     * @return
+     */
     public Long ttl(String key) {
         return redisCommand.ttl(key);
     }
-
+    /**
+     * 返回剩余时间，单位ms
+     * @param key
+     * @return
+     */
     public Long pttl(String key) {
         return redisCommand.pttl(key);
     }
@@ -94,52 +132,149 @@ public class RedisCli extends Client implements BaseCommand {
         return null;
     }
 
+    /**
+     * 从偏移量 offset 开始， 用 value 参数覆写(overwrite)键 key 储存的字符串值
+     * @param key
+     * @param offset
+     * @param value
+     * @return
+     */
     public Long setrange(String key, long offset, String value) {
-        return null;
+        return redisCommand.setrange(key,offset,value);
     }
 
+    /**
+     * 返回键 key 储存的字符串值的指定部分， 字符串的截取范围由 start 和 end 两个偏移量决定 (包括 start 和 end 在内)
+     * @param key
+     * @param startOffset
+     * @param endOffset
+     * @return
+     */
     public String getrange(String key, long startOffset, long endOffset) {
-        return null;
+        return redisCommand.getrange(key,startOffset,endOffset);
     }
 
+    /**
+     * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)。
+     *
+     * 当 key 存在但不是字符串类型时，返回一个错误。
+     * @param key
+     * @param value
+     * @return
+     */
     public String getSet(String key, String value) {
-        return null;
+        return redisCommand.getSet(key,value);
     }
 
+    /**
+     * 只在键 key 不存在的情况下， 将键 key 的值设置为 value 。
+     * 若键 key 已经存在， 则 SETNX 命令不做任何动作
+     * @param key
+     * @param value
+     * @return
+     */
     public Long setnx(String key, String value) {
-        return null;
+        return redisCommand.setnx(key,value);
     }
 
+    /**
+     * 将键 key 的值设置为 value ， 并将键 key 的生存时间设置为 seconds 秒钟。
+     * 如果键 key 已经存在， 那么 SETEX 命令将覆盖已有的值
+     * @param key
+     * @param seconds
+     * @param value
+     * @return
+     */
     public String setex(String key, int seconds, String value) {
-        return null;
+        return redisCommand.setex(key,seconds,value);
     }
-
+    /**
+     * 将键 key 的值设置为 value ， 并将键 key 的生存时间设置为 milliseconds 秒钟。
+     * 如果键 key 已经存在， 那么 SETEX 命令将覆盖已有的值
+     * @param key
+     * @param milliseconds
+     * @param value
+     * @return
+     */
     public String psetex(String key, long milliseconds, String value) {
-        return null;
+        return redisCommand.psetex(key,milliseconds,value);
     }
 
+    /**
+     * 将键 key 储存的整数值减去减量 decrement 。
+     * 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 DECRBY 命令。
+     * 如果键 key 储存的值不能被解释为数字， 那么 DECRBY 命令将返回一个错误
+     * @param key
+     * @param integer
+     * @return
+     */
     public Long decrBy(String key, long integer) {
-        return null;
+        return redisCommand.decrBy(key,integer);
     }
 
+    /**
+     * 为键 key 储存的数字值减去一。
+     * 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 DECR 操作。
+     * 如果键 key 储存的值不能被解释为数字， 那么 DECR 命令将返回一个错误
+     * @param key
+     * @return
+     */
     public Long decr(String key) {
-        return null;
+        return redisCommand.decr(key);
     }
 
+    /**
+     为键 key 储存的数字值加上增量 increment 。
+     如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 INCRBY 命令。
+     如果键 key 储存的值不能被解释为数字， 那么 INCRBY 命令将返回一个错误。
+     * @param key
+     * @param integer
+     * @return
+     * @param key
+     * @param integer
+     * @return
+     */
     public Long incrBy(String key, long integer) {
-        return null;
+        return redisCommand.incrBy(key,integer);
     }
 
+    /**
+     * 为键 key 储存的值加上浮点数增量 increment 。
+     *
+     * 如果键 key 不存在， 那么 INCRBYFLOAT 会先将键 key 的值设为 0 ， 然后再执行加法操作。
+     *
+     * 如果命令执行成功， 那么键 key 的值会被更新为执行加法计算之后的新值， 并且新值会以字符串的形式返回给调用者。
+     * @param key
+     * @param value
+     * @return
+     */
     public Double incrByFloat(String key, double value) {
-        return null;
+        return redisCommand.incrByFloat(key,value);
     }
 
+    /**
+     * 为键 key 储存的数字值加上一。
+     *
+     * 如果键 key 不存在， 那么它的值会先被初始化为 0 ， 然后再执行 INCR 命令。
+     *
+     * 如果键 key 储存的值不能被解释为数字， 那么 INCR 命令将返回一个错误。
+     * @param key
+     * @return
+     */
     public Long incr(String key) {
-        return null;
+        return redisCommand.incr(key);
     }
 
+    /**
+     * 如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾。
+     *
+     * 如果 key 不存在， APPEND 就简单地将给定 key 设为 value ，就像执行 SET key value 一样
+     * @param key
+     * @param value
+     * @return
+     */
     public Long append(String key, String value) {
-        return null;
+        return redisCommand.append(key,value);
     }
 
     public String substr(String key, int start, int end) {

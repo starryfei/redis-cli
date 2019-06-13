@@ -103,21 +103,25 @@ public class RedisCommandImpl implements RedisCommand {
             e.printStackTrace();
         }
     }
-    public String set(String key, String value) {
-        byte[] bytes = cover("set",key,value);
-        sendMsg(bytes);
-        return readResult();
-    }
 
-    //    set cc va EX 13 NX
+
+    /**
+     * set cc va EX 13 NX
+     * @param key
+     * @param value
+     * @param nxxx
+     * @param expx
+     * @param time
+     * @return
+     */
     public String set(String key, String value, String nxxx, String expx, long time) {
         byte[] bytes = cover("set",key,value,expx,String.valueOf(time),nxxx);
         sendMsg(bytes);
         return readResult();
     }
 
-    public String set(String key, String value, String nxxx) {
-        byte[] bytes = cover("set",key,value,nxxx);
+    public String set(String... args) {
+        byte[] bytes = cover("set",args);
         sendMsg(bytes);
         return readResult();
     }
@@ -136,11 +140,17 @@ public class RedisCommandImpl implements RedisCommand {
     }
 
     public Long persist(String key) {
-        return null;
+        byte[] bytes = cover("persist",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public String type(String key) {
-        return null;
+        byte[] bytes = cover("type",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return  res;
     }
 
     public Long expire(String key, int seconds) {
@@ -198,51 +208,87 @@ public class RedisCommandImpl implements RedisCommand {
     }
 
     public Long setrange(String key, long offset, String value) {
-        return null;
+        byte[] bytes = cover("setrange",key, String.valueOf(offset), value);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public String getrange(String key, long startOffset, long endOffset) {
-        return null;
+        byte[] bytes = cover("getrange",key,String.valueOf(startOffset),String.valueOf(endOffset));
+        sendMsg(bytes);
+        String res = readResult();
+        return  res;
     }
 
     public String getSet(String key, String value) {
-        return null;
+        byte[] bytes = cover("getset",key,value);
+        sendMsg(bytes);
+        String res = readResult();
+        return  res;
     }
 
     public Long setnx(String key, String value) {
-        return null;
+        byte[] bytes = cover("setnx",key,value);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public String setex(String key, int seconds, String value) {
-        return null;
+        byte[] bytes = cover("setex",key,String.valueOf(seconds), value);
+        sendMsg(bytes);
+        String res = readResult();
+        return res;
     }
 
     public String psetex(String key, long milliseconds, String value) {
-        return null;
+        byte[] bytes = cover("psetex",key,String.valueOf(milliseconds), value);
+        sendMsg(bytes);
+        String res = readResult();
+        return res;
     }
 
     public Long decrBy(String key, long integer) {
-        return null;
+        byte[] bytes = cover("descby",key,String.valueOf(integer));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long decr(String key) {
-        return null;
+        byte[] bytes = cover("decr",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long incrBy(String key, long integer) {
-        return null;
+        byte[] bytes = cover("incrby",key,String.valueOf(integer));
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Double incrByFloat(String key, double value) {
-        return null;
+        byte[] bytes = cover("incrbyfloat",key,String.valueOf(value));
+        sendMsg(bytes);
+        String res = readResult();
+        return Double.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long incr(String key) {
-        return null;
+        byte[] bytes = cover("incr",key);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public Long append(String key, String value) {
-        return null;
+        byte[] bytes = cover("append",key, value);
+        sendMsg(bytes);
+        String res = readResult();
+        return Long.valueOf(res.replaceAll("\\:",""));
     }
 
     public String substr(String key, int start, int end) {

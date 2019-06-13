@@ -13,11 +13,12 @@ import java.util.Set;
  * @date: 2019-06-11 17:53
  **/
 public interface RedisCommand {
-    String set(String key, String value);
-
+//    String set(String key, String value);
+//
     String set(String key, String value, String nxxx, String expx, long time);
-
-    String set(String key, String value, String nxxx);
+//
+//    String set(String key, String value, String nxxx);
+    String set(String... args);
 
     String get(String key);
 
